@@ -36,8 +36,8 @@ public class LogModData {
     private static final AtomicBoolean spawnersEnabled = new AtomicBoolean(true);
     private static final AtomicBoolean spawnerAnalysisEnabled = new AtomicBoolean(true);
 
-    private static final AtomicBoolean renderSpawnerEnabled = new AtomicBoolean(true);
-    private static final AtomicBoolean hudEnabled = new AtomicBoolean(true);
+    private static final AtomicBoolean renderSpawnerEnabled = new AtomicBoolean(false);
+    private static final AtomicBoolean hudEnabled = new AtomicBoolean(false);
     private static final AtomicBoolean healthEnabled = new AtomicBoolean(true);
 
     private static final AtomicBoolean projectilesEnabled = new AtomicBoolean(true);
