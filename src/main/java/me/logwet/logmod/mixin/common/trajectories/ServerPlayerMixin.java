@@ -5,6 +5,7 @@ import java.util.function.Predicate;
 import me.logwet.logmod.LogMod;
 import me.logwet.logmod.LogModData;
 import me.logwet.logmod.tools.trajectories.projectiles.IProjectile;
+import me.logwet.logmod.tools.trajectories.projectiles.arrow.ArrowProjectile;
 import me.logwet.logmod.tools.trajectories.projectiles.dropped.GoldIngotProjectile;
 import me.logwet.logmod.tools.trajectories.projectiles.throwable.PearlProjectile;
 import me.logwet.logmod.tools.trajectories.projectiles.throwable.PotionProjectile;
@@ -25,7 +26,10 @@ public abstract class ServerPlayerMixin extends Player {
     @SuppressWarnings("rawtypes")
     private static final IProjectile[] trackedProjectiles =
             new IProjectile[] {
-                PearlProjectile.INSTANCE, PotionProjectile.INSTANCE, GoldIngotProjectile.INSTANCE
+                PearlProjectile.INSTANCE,
+                PotionProjectile.INSTANCE,
+                GoldIngotProjectile.INSTANCE,
+                ArrowProjectile.INSTANCE
             };
 
     public ServerPlayerMixin(Level level, BlockPos blockPos, GameProfile gameProfile) {
