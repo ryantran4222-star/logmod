@@ -41,16 +41,11 @@ public abstract class AbstractDroppedItemProjectile implements IDroppedItemProje
             float j = Mth.cos(parent.xRot * 0.017453292F);
             float k = Mth.sin(parent.yRot * 0.017453292F);
             float l = Mth.cos(parent.yRot * 0.017453292F);
-            float m = parent.getRandom().nextFloat() * 6.2831855F;
-            float n = 0.02F * parent.getRandom().nextFloat();
 
             projectileEntity.setDeltaMovement(
-                    (double) (-k * j * 0.3F) + Mth.cos(m) * (double) n,
-                    -g * 0.3F
-                            + 0.1F
-                            + (parent.getRandom().nextFloat() - parent.getRandom().nextFloat())
-                                    * 0.1F,
-                    (double) (l * j * 0.3F) + Mth.sin(m) * (double) n);
+                    (double) (-k * j * 0.3F),
+                    -g * 0.3F + 0.1F,
+                    (double) (l * j * 0.3F));
 
             trajectoryList.add(projectileEntity.position());
         }
@@ -79,7 +74,7 @@ public abstract class AbstractDroppedItemProjectile implements IDroppedItemProje
                 if (!((EntityAccessor) projectileEntity).getOnGround()
                         || Entity.getHorizontalDistanceSqr(projectileEntity.getDeltaMovement())
                                 > 9.999999747378752E-6D
-                        || (tickCount + projectileEntity.getId()) % 4 == 0) {
+                        || tickCount % 4 == 0) {
                     projectileEntity.move(MoverType.SELF, projectileEntity.getDeltaMovement());
                     float f = 0.98F;
                     if (((EntityAccessor) projectileEntity).getOnGround()) {
