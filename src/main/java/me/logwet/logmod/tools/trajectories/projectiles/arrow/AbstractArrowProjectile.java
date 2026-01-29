@@ -25,14 +25,14 @@ public abstract class AbstractArrowProjectile implements IArrowProjectile {
 
         AbstractArrow arrowEntity = this.getBaseEntity(parent.level, parent);
 
-        // Shoot with full charge (1.0F charge = 3.0 velocity)
+        // Shoot with full charge (1.0F charge for bow = 3.0 velocity, crossbow = 3.15 velocity)
         // Using 0.0F inaccuracy for perfect accuracy prediction
         arrowEntity.shootFromRotation(
                 parent,
                 parent.xRot,
                 parent.yRot,
                 0.0F,
-                this.getMaxVelocity(),
+                this.getMaxVelocity(parent),
                 0.0F);
 
         trajectoryList.add(arrowEntity.position());

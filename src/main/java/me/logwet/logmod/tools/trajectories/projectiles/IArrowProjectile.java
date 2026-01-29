@@ -25,11 +25,16 @@ public interface IArrowProjectile extends IProjectile<AbstractArrow> {
     }
 
     /**
-     * Base velocity scaling when fully charged (1.0 second draw)
-     * Minecraft uses: velocity = charge * 3.0F where charge is 0.0-1.0
+     * Base velocity scaling when fully charged
+     * Bows: velocity = charge * 3.0F where charge is 0.0-1.0
+     * Crossbows: velocity = 3.15F (slightly faster than bows)
      */
-    default float getMaxVelocity() {
-        return 3.0F;
+    default float getMaxVelocity(net.minecraft.world.entity.player.Player player) {
+        net.minecraft.world.item.Item item = player.getMainHandItem().getItem();
+        if (item == net.minecraft.world.item.Items.CROSSBOW) {
+            return 3.15F;
+        }
+        return 3.0F; // Bow default
     }
 
     /**
