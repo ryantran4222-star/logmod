@@ -6,6 +6,7 @@ import me.logwet.logmod.LogMod;
 import me.logwet.logmod.LogModData;
 import me.logwet.logmod.tools.trajectories.projectiles.IProjectile;
 import me.logwet.logmod.tools.trajectories.projectiles.arrow.ArrowProjectile;
+import me.logwet.logmod.tools.trajectories.projectiles.dropped.GildedBlackstoneProjectile;
 import me.logwet.logmod.tools.trajectories.projectiles.dropped.GoldIngotProjectile;
 import me.logwet.logmod.tools.trajectories.projectiles.throwable.PearlProjectile;
 import me.logwet.logmod.tools.trajectories.projectiles.throwable.PotionProjectile;
@@ -29,6 +30,7 @@ public abstract class ServerPlayerMixin extends Player {
                 PearlProjectile.INSTANCE,
                 PotionProjectile.INSTANCE,
                 GoldIngotProjectile.INSTANCE,
+                GildedBlackstoneProjectile.INSTANCE,
                 ArrowProjectile.INSTANCE
             };
 
