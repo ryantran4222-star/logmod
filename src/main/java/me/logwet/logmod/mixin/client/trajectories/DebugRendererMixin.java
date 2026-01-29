@@ -13,8 +13,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.debug.DebugRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -44,8 +46,22 @@ public abstract class DebugRendererMixin {
             TrajectoryRenderer.renderTrajectory(poseStack, bufferSource, playerPos, trajectory);
 
             BlockHitResult blockHitResult = trajectory.getBlockHitResult();
+            EntityHitResult entityHitResult = trajectory.getEntityHitResult();
 
-            if (blockHitResult != null) {
+            if (entityHitResult != null) {
+                // Render orange box for entity hit
+                Entity hitEntity = entityHitResult.getEntity();
+                AABB entityBox = hitEntity.getBoundingBox().move(playerPos.scale(-1));
+
+                BoxRenderer.renderBox(
+                        poseStack,
+                        bufferSource,
+                        entityBox,
+                        1.0F,
+                        0.5F,
+                        0.0F);
+            } else if (blockHitResult != null) {
+                // Render magenta box for block hit
                 BlockPos blockPos = blockHitResult.getBlockPos();
 
                 BoxRenderer.renderBox(

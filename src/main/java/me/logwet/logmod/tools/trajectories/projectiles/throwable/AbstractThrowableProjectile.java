@@ -12,6 +12,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -20,6 +21,7 @@ public abstract class AbstractThrowableProjectile implements IThrowableProjectil
     public Trajectory calculateTrajectory(Player parent) {
         List<Vec3> trajectoryList = new ArrayList<>();
         BlockHitResult blockHitResult = null;
+        EntityHitResult entityHitResult = null;
 
         ThrowableProjectile projectileEntity = this.getBaseEntity(parent.level, parent);
 
@@ -42,7 +44,8 @@ public abstract class AbstractThrowableProjectile implements IThrowableProjectil
                                 if (!entity.isSpectator()
                                         && entity.isAlive()
                                         && entity.isPickable()) {
-                                    return parent.isPassengerOfSameVehicle(entity);
+                                    // Don't hit the player who threw the projectile
+                                    return !entity.equals(parent) && !parent.isPassengerOfSameVehicle(entity);
                                 } else {
                                     return false;
                                 }
@@ -51,6 +54,11 @@ public abstract class AbstractThrowableProjectile implements IThrowableProjectil
 
             if (hitResult.getType() == HitResult.Type.BLOCK) {
                 blockHitResult = (BlockHitResult) hitResult;
+                trajectoryList.add(hitResult.getLocation());
+                break;
+            } else if (hitResult.getType() == HitResult.Type.ENTITY) {
+                entityHitResult = (EntityHitResult) hitResult;
+                trajectoryList.add(hitResult.getLocation());
                 break;
             }
 
@@ -78,6 +86,8 @@ public abstract class AbstractThrowableProjectile implements IThrowableProjectil
 
         projectileEntity.kill();
 
-        return new Trajectory(trajectoryList, blockHitResult, Trajectory.RenderType.FILLED, 3);
+        // Use startTick of 1 to ensure short trajectories still render
+        int startTick = Math.min(3, Math.max(1, trajectoryList.size() - 1));
+        return new Trajectory(trajectoryList, blockHitResult, entityHitResult, Trajectory.RenderType.FILLED, startTick);
     }
 }
