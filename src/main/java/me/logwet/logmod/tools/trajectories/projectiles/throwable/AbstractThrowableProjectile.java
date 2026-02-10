@@ -15,10 +15,15 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractThrowableProjectile implements IThrowableProjectile {
     @Override
     public Trajectory calculateTrajectory(Player parent) {
+        return calculateTrajectoryWithVelocity(parent, null);
+    }
+
+    protected Trajectory calculateTrajectoryWithVelocity(Player parent, @Nullable Vec3 additionalVelocity) {
         List<Vec3> trajectoryList = new ArrayList<>();
         BlockHitResult blockHitResult = null;
         EntityHitResult entityHitResult = null;
@@ -32,6 +37,12 @@ public abstract class AbstractThrowableProjectile implements IThrowableProjectil
                 this.getVertScalingFac(),
                 this.getVelScalingFac(),
                 this.getRandScalingFac());
+
+        // Add player velocity for jump-throw calculation
+        if (additionalVelocity != null) {
+            Vec3 currentVelocity = projectileEntity.getDeltaMovement();
+            projectileEntity.setDeltaMovement(currentVelocity.add(additionalVelocity));
+        }
 
         trajectoryList.add(projectileEntity.position());
 

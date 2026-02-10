@@ -30,7 +30,7 @@ public class PathRenderer {
             float g = RGB[1];
             float b = RGB[2];
 
-            TrajectoryRenderer.drawLine(vertexConsumer, matrix4f, prevPos, pos, r, g, b);
+            TrajectoryRenderer.drawLine(vertexConsumer, matrix4f, prevPos, pos, r, g, b, 1.0F);
         }
     }
 }

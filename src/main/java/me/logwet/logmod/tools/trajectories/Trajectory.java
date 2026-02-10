@@ -12,13 +12,14 @@ public class Trajectory {
     private final EntityHitResult entityHitResult;
     private final RenderType renderType;
     private final int startTick;
+    private final Trajectory alternateTrajectory;
 
     public Trajectory(
             List<Vec3> trajectory,
             @Nullable BlockHitResult blockHitResult,
             RenderType renderType,
             int startTick) {
-        this(trajectory, blockHitResult, null, renderType, startTick);
+        this(trajectory, blockHitResult, null, renderType, startTick, null);
     }
 
     public Trajectory(
@@ -27,11 +28,22 @@ public class Trajectory {
             @Nullable EntityHitResult entityHitResult,
             RenderType renderType,
             int startTick) {
+        this(trajectory, blockHitResult, entityHitResult, renderType, startTick, null);
+    }
+
+    public Trajectory(
+            List<Vec3> trajectory,
+            @Nullable BlockHitResult blockHitResult,
+            @Nullable EntityHitResult entityHitResult,
+            RenderType renderType,
+            int startTick,
+            @Nullable Trajectory alternateTrajectory) {
         this.trajectory = trajectory;
         this.blockHitResult = blockHitResult;
         this.entityHitResult = entityHitResult;
         this.renderType = renderType;
         this.startTick = startTick;
+        this.alternateTrajectory = alternateTrajectory;
     }
 
     public List<Vec3> getTrajectory() {
@@ -52,6 +64,11 @@ public class Trajectory {
 
     public int getStartTick() {
         return startTick;
+    }
+
+    @Nullable
+    public Trajectory getAlternateTrajectory() {
+        return alternateTrajectory;
     }
 
     public enum RenderType {

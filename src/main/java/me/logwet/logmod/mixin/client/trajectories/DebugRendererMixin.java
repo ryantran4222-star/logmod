@@ -43,7 +43,17 @@ public abstract class DebugRendererMixin {
                 && (trajectory = LogModData.getTrajectory(uuid)) != null) {
             Vec3 playerPos = new Vec3(x, y, z);
 
-            TrajectoryRenderer.renderTrajectory(poseStack, bufferSource, playerPos, trajectory);
+            // Check if player is holding an ender pearl
+            Entity cameraEntity = Minecraft.getInstance().gameRenderer.getMainCamera().getEntity();
+            boolean isEnderPearl = false;
+            if (cameraEntity instanceof net.minecraft.world.entity.player.Player) {
+                net.minecraft.world.entity.player.Player player = (net.minecraft.world.entity.player.Player) cameraEntity;
+                isEnderPearl = player.getMainHandItem().getItem() == net.minecraft.world.item.Items.ENDER_PEARL ||
+                               player.getOffhandItem().getItem() == net.minecraft.world.item.Items.ENDER_PEARL;
+            }
+
+            // Render normal trajectory
+            TrajectoryRenderer.renderTrajectory(poseStack, bufferSource, playerPos, trajectory, isEnderPearl);
 
             BlockHitResult blockHitResult = trajectory.getBlockHitResult();
             EntityHitResult entityHitResult = trajectory.getEntityHitResult();
@@ -72,6 +82,41 @@ public abstract class DebugRendererMixin {
                         1.0F,
                         0.0F,
                         1.0F);
+            }
+
+            // Render alternate trajectory (jump-throw) if it exists
+            Trajectory alternateTrajectory = trajectory.getAlternateTrajectory();
+            if (alternateTrajectory != null) {
+                TrajectoryRenderer.renderTrajectory(poseStack, bufferSource, playerPos, alternateTrajectory, isEnderPearl);
+
+                BlockHitResult altBlockHitResult = alternateTrajectory.getBlockHitResult();
+                EntityHitResult altEntityHitResult = alternateTrajectory.getEntityHitResult();
+
+                if (altEntityHitResult != null) {
+                    // Render orange box for entity hit
+                    Entity hitEntity = altEntityHitResult.getEntity();
+                    AABB entityBox = hitEntity.getBoundingBox().move(playerPos.scale(-1));
+
+                    BoxRenderer.renderBox(
+                            poseStack,
+                            bufferSource,
+                            entityBox,
+                            1.0F,
+                            0.5F,
+                            0.0F);
+                } else if (altBlockHitResult != null) {
+                    // Render ORANGE box for jump-throw block hit
+                    BlockPos blockPos = altBlockHitResult.getBlockPos();
+
+                    BoxRenderer.renderBox(
+                            poseStack,
+                            bufferSource,
+                            AABB.unitCubeFromLowerCorner(
+                                    Vec3.atLowerCornerOf(blockPos).subtract(playerPos)),
+                            1.0F,
+                            0.5F,
+                            0.0F);
+                }
             }
         }
     }

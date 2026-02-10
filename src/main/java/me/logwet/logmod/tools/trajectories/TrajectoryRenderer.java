@@ -16,15 +16,16 @@ public class TrajectoryRenderer {
             Vec3 pos2,
             float r,
             float g,
-            float b) {
+            float b,
+            float a) {
         vertexConsumer
                 .vertex(matrix4f, (float) pos1.x, (float) pos1.y, (float) pos1.z)
-                .color(r, g, b, 1.0F)
+                .color(r, g, b, a)
                 .endVertex();
 
         vertexConsumer
                 .vertex(matrix4f, (float) pos2.x, (float) pos2.y, (float) pos2.z)
-                .color(r, g, b, 1.0F)
+                .color(r, g, b, a)
                 .endVertex();
     }
 
@@ -36,7 +37,8 @@ public class TrajectoryRenderer {
             double offset,
             float r,
             float g,
-            float b) {
+            float b,
+            float a) {
         double stepSize = 1.0D;
 
         Vec3 dirVec = endPos.subtract(startPos);
@@ -59,7 +61,7 @@ public class TrajectoryRenderer {
                 }
 
                 if (render) {
-                    drawLine(vertexConsumer, matrix4f, offsetPos1, offsetPos2, r, g, b);
+                    drawLine(vertexConsumer, matrix4f, offsetPos1, offsetPos2, r, g, b, a);
                 }
 
                 offsetPos1 = offsetPos2;
@@ -90,12 +92,16 @@ public class TrajectoryRenderer {
             PoseStack poseStack,
             MultiBufferSource.BufferSource bufferSource,
             Vec3 entityPos,
-            Trajectory trajectory) {
+            Trajectory trajectory,
+            boolean isEnderPearl) {
         VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.lines());
         Matrix4f matrix4f = poseStack.last().pose();
 
         double offset = 0.0D;
         int tickLength = trajectory.getTrajectory().size();
+
+        // All trajectory lines are 50% transparent
+        float alpha = 0.5F;
 
         for (int i = trajectory.getStartTick(); i < tickLength; i++) {
             Vec3 prevPos = trajectory.getTrajectory().get(i - 1).subtract(entityPos);
@@ -115,9 +121,9 @@ public class TrajectoryRenderer {
             b = 0.0F;
 
             if (trajectory.getRenderType() == Trajectory.RenderType.FILLED) {
-                drawLine(vertexConsumer, matrix4f, prevPos, pos, r, g, b);
+                drawLine(vertexConsumer, matrix4f, prevPos, pos, r, g, b, alpha);
             } else if (trajectory.getRenderType() == Trajectory.RenderType.DOTTED) {
-                offset = renderDottedLine(vertexConsumer, matrix4f, prevPos, pos, offset, r, g, b);
+                offset = renderDottedLine(vertexConsumer, matrix4f, prevPos, pos, offset, r, g, b, alpha);
             }
         }
     }
